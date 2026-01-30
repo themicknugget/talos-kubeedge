@@ -139,11 +139,12 @@ jobs:
       - name: Build Talos installer with extension
         run: |
           mkdir -p output
-          docker run --rm -v $PWD/output:/out \
+          docker run --rm --privileged \
+            -v $PWD/output:/out \
             ghcr.io/siderolabs/imager:${{ env.TALOS_VERSION }} \
             --base-installer-image factory.talos.dev/${{ matrix.variant.platform }}/${{ env.OVERLAY_ID }}:${{ env.TALOS_VERSION }} \
             --system-extension-image ${{ steps.tag.outputs.extension }} \
-            --output-installer /out/talos-kubeedge-installer.tar.gz \
+            --output installer:/out/talos-kubeedge-installer.tar.gz \
             --arch amd64
 
       - name: Load installer image
