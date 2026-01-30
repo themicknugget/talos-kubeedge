@@ -13,7 +13,7 @@ on:
       kubeedge_version:
         description: 'KubeEdge version'
         required: false
-        default: 'v1.19.1'
+        default: 'v1.22.1'
       talos_version:
         description: 'Talos version for installer'
         required: false
@@ -23,7 +23,7 @@ on:
       kubeedge_version:
         description: 'KubeEdge version'
         required: false
-        default: 'v1.19.1'
+        default: 'v1.22.1'
         type: string
       talos_version:
         description: 'Talos version for installer'
@@ -76,7 +76,7 @@ jobs:
       - name: Set version
         id: version
         run: |
-          VERSION="${{ inputs.kubeedge_version || github.event.inputs.kubeedge_version || 'v1.19.1' }}"
+          VERSION="${{ inputs.kubeedge_version || github.event.inputs.kubeedge_version || 'v1.22.1' }}"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Build and push

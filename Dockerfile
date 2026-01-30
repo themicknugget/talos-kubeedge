@@ -1,6 +1,6 @@
 # KubeEdge EdgeCore Extension for Talos 1.12
 
-ARG EDGE_CORE_VERSION=v1.19.1
+ARG EDGE_CORE_VERSION=v1.22.1
 ARG TARGETPLATFORM
 
 FROM alpine:3.20 AS builder
