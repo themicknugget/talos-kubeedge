@@ -142,9 +142,10 @@ jobs:
           docker run --rm --privileged \
             -v $PWD/output:/out \
             ghcr.io/siderolabs/imager:${{ env.TALOS_VERSION }} \
+            installer \
             --base-installer-image factory.talos.dev/${{ matrix.variant.platform }}/${{ env.OVERLAY_ID }}:${{ env.TALOS_VERSION }} \
             --system-extension-image ${{ steps.tag.outputs.extension }} \
-            --output installer:/out/talos-kubeedge-installer.tar.gz \
+            --output /out/talos-kubeedge-installer.tar.gz \
             --arch amd64
 
       - name: Load installer image
