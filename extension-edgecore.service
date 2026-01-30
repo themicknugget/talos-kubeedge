@@ -1,0 +1,28 @@
+[Unit]
+Description=KubeEdge EdgeCore Extension Service
+Documentation=https://kubeedge.io
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/usr/local/lib/containers/edgecore/edgecore
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/kubeedge/edgecore.env
+ExecStartPre=/bin/mkdir -p /var/lib/kubeedge /var/log/kubeedge /etc/kubeedge
+ExecStart=/usr/local/lib/containers/edgecore/edgecore --config=/etc/kubeedge/config/edgecore.yaml
+Restart=always
+RestartSec=5s
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/kubeedge /var/log/kubeedge /etc/kubeedge
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=8192
+
+[Install]
+WantedBy=multi-user.target

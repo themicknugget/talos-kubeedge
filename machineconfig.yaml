@@ -1,0 +1,63 @@
+# Talos Machine Configuration example for using KubeEdge EdgeCore Extension
+# Generate your installer with the extension at https://factory.talos.dev/
+# Apply with: talosctl apply-config --insecure --nodes <node-ip> --file machineconfig.yaml
+
+version: v1alpha1
+machine:
+  type: worker
+
+  install:
+    # Replace with your installer image from Talos Image Factory
+    # Include the extension: ghcr.io/themicknugget/talos-kubeedge:latest
+    image: factory.talos.dev/<your-overlay-id>/installer:v1.12.0
+    wipe: true
+    disk: /dev/sda  # Adjust for your system
+
+  network:
+    hostname: edge-node-1
+    interfaces:
+      - deviceSelector:
+          physical: true
+        dhcp: true
+
+  kubelet:
+    extraArgs:
+      eviction-hard: "nodefs.available<15%,memory.available<100Mi"
+      max-pods: 110
+
+cluster:
+  controlPlane:
+    endpoint: https://<controlplane-ip>:6443  # Adjust to your control plane
+
+---
+# Extension Service Configuration for EdgeCore
+# Apply separately: talosctl create -f edgecore-service.yaml
+apiVersion: v1alpha1
+kind: ExtensionServiceConfig
+metadata:
+  name: edgecore
+spec:
+  configFiles:
+    - content: |
+        apiVersion: edgecore.config.kubeedge.io/v1alpha2
+        kind: EdgeCore
+        database:
+          dataSource: /var/lib/kubeedge/edgecore.db
+        modules:
+          edged:
+            enabled: true
+            nodeName: edge-node-1
+          edgehub:
+            enabled: true
+            heartbeat: 15
+            websocket:
+              server: <cloudcore-server>
+              port: 10000
+      mountPath: /etc/kubeedge/config/edgecore.yaml
+      permissions: 0600
+
+  environment:
+    - name: EDGE_CLOUDCORE_SERVER
+      value: "<cloudcore-server>:10000"
+    - name: EDGE_NODE_NAME
+      value: "edge-node-1"

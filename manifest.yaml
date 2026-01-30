@@ -1,0 +1,8 @@
+version: v1alpha1
+metadata:
+  name: edgecore
+  version: 0.1.0
+  description: "KubeEdge EdgeCore extension service for Talos Linux"
+  compatibility:
+    talos:
+      version: ">= v1.12.0"
