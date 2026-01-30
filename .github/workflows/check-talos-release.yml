@@ -1,0 +1,82 @@
+name: Check Talos Release
+
+on:
+  schedule:
+    # Run daily at 9:00 UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-release:
+    runs-on: ubuntu-latest
+    outputs:
+      new-version: ${{ steps.check.outputs.new-version }}
+      should-build: ${{ steps.check.outputs.should-build }}
+    steps:
+      - name: Fetch latest Talos release
+        id: release
+        run: |
+          # Get the latest Talos release from GitHub API
+          LATEST_RELEASE=$(curl -sL "https://api.github.com/repos/siderolabs/talos/releases/latest" | jq -r '.tag_name')
+          echo "release=${LATEST_RELEASE}" >> $GITHUB_OUTPUT
+
+      - name: Check if already built
+        id: check
+        run: |
+          LATEST="${{ steps.release.outputs.release }}"
+
+          # Get the tag of the latest installer image we've built
+          # We'll check the GHCR packages API for our installer image
+          echo "Checking if we've already built ${LATEST}..."
+
+          # Get all versions of our installer image from GHCR
+          RESPONSE=$(curl -sL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/orgs/themicknugget/packages/container/talos-kubeedge-installer/versions" \
+            --write-out '%{http_code}' --silent --output /tmp/versions.json)
+
+          # Check if we have a version matching the Talos release
+          if echo "${RESPONSE}" | grep -q "200"; then
+            BUILT_VERSIONS=$(jq -r '.[].metadata.container.tags[]' /tmp/versions.json 2>/dev/null || echo "")
+
+            if echo "${BUILT_VERSIONS}" | grep -q "${LATEST}"; then
+              echo "Already built installer for ${LATEST}"
+              echo "should-build=false" >> $GITHUB_OUTPUT
+              echo "new-version=" >> $GITHUB_OUTPUT
+            else
+              echo "New Talos release detected: ${LATEST}"
+              echo "should-build=true" >> $GITHUB_OUTPUT
+              echo "new-version=${LATEST}" >> $GITHUB_OUTPUT
+            fi
+          else
+            # Package might not exist yet, or API error - try to build anyway
+            echo "Could not check existing versions (HTTP ${RESPONSE}), assuming new build needed"
+            echo "should-build=true" >> $GITHUB_OUTPUT
+            echo "new-version=${LATEST}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger build for new version
+        if: steps.check.outputs.should-build == 'true'
+        run: |
+          echo "Triggering build for Talos ${{ steps.check.outputs.new-version }}"
+          gh workflow run build-extension.yml \
+            -f talos_version="${{ steps.check.outputs.new-version }}" \
+            --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "## Talos Release Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Latest Talos Release:** \`${{ steps.release.outputs.release }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Triggered:** ${{ steps.check.outputs.should-build }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check.outputs.should-build }}" == "true" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "A new build has been triggered for version \`${{ steps.check.outputs.new-version }}\`" >> $GITHUB_STEP_SUMMARY
+          fi
