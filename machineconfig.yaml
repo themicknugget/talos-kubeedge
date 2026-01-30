@@ -1,5 +1,4 @@
 # Talos Machine Configuration example for using KubeEdge EdgeCore Extension
-# Generate your installer with the extension at https://factory.talos.dev/
 # Apply with: talosctl apply-config --insecure --nodes <node-ip> --file machineconfig.yaml
 
 version: v1alpha1
@@ -7,11 +6,14 @@ machine:
   type: worker
 
   install:
-    # Replace with your installer image from Talos Image Factory
-    # Include the extension: ghcr.io/themicknugget/talos-kubeedge:latest
-    image: factory.talos.dev/<your-overlay-id>/installer:v1.12.0
+    # Use talosctl imager to build a custom installer with the KubeEdge extension:
+    # talosctl imager --talos-version=v1.12.5 \
+    #   --system-extension-image=ghcr.io/themicknugget/talos-kubeedge:latest \
+    #   --output-installer installer.tar.gz
+    # Then push to your registry and reference the image here:
+    image: <your-registry>/talos-kubeedge-installer:v1.12.5-kubeedge
     wipe: true
-    disk: /dev/sda  # Adjust for your system
+    disk: /dev/sda
 
   network:
     hostname: edge-node-1
@@ -20,14 +22,9 @@ machine:
           physical: true
         dhcp: true
 
-  kubelet:
-    extraArgs:
-      eviction-hard: "nodefs.available<15%,memory.available<100Mi"
-      max-pods: 110
-
 cluster:
   controlPlane:
-    endpoint: https://<controlplane-ip>:6443  # Adjust to your control plane
+    endpoint: https://<controlplane-ip>:6443
 
 ---
 # Extension Service Configuration for EdgeCore

@@ -4,36 +4,38 @@ A Talos Linux extension service that provides [KubeEdge EdgeCore](https://kubeed
 
 ## Quick Start
 
-### 1. Use the Extension Image
+### 1. Extension Image
 
-Images are built automatically by GitHub Actions:
+Published to:
 ```
 ghcr.io/themicknugget/talos-kubeedge:latest
 ```
 
-### 2. Create Talos Installer with Extension
+### 2. Build Talos Installer with Extension
 
-Visit [Talos Image Factory](https://factory.talos.dev/), add the extension image, and generate a custom installer.
+Since this is a third-party extension, you cannot use Talos Image Factory. Use `talosctl imager` instead:
 
-Or use `talosctl imager`:
 ```bash
 talosctl imager \
+  --talos-version=v1.12.5 \
   --system-extension-image=ghcr.io/themicknugget/talos-kubeedge:latest \
   --output-installer installer.tar.gz
 ```
 
+Then load and push to your registry:
+```bash
+docker load -i installer.tar.gz
+docker tag <image-sha> <your-registry>/talos-kubeedge-installer:v1.12.5-kubeedge
+docker push <your-registry>/talos-kubeedge-installer:v1.12.5-kubeedge
+```
+
 ### 3. Deploy
 
-Update your Talos machine config:
+Use your custom installer in machine config:
 ```yaml
 machine:
   install:
-    image: <your-installer-from-image-factory>
-```
-
-Apply:
-```bash
-talosctl apply-config --insecure --nodes <node-ip> --file machineconfig.yaml
+    image: <your-registry>/talos-kubeedge-installer:v1.12.5-kubeedge
 ```
 
 ## Configuration
@@ -73,7 +75,6 @@ spec:
 | `manifest.yaml` | Extension metadata (required for Talos) |
 | `extension-edgecore.service` | Systemd service that runs EdgeCore |
 | `machineconfig.yaml` | Example Talos configuration |
-| `.github/workflows/build-extension.yml` | GitHub Actions CI/CD |
 
 ## Compatibility
 
