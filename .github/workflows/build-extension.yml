@@ -145,12 +145,12 @@ jobs:
             installer \
             --base-installer-image factory.talos.dev/${{ matrix.variant.platform }}/${{ env.OVERLAY_ID }}:${{ env.TALOS_VERSION }} \
             --system-extension-image ${{ steps.tag.outputs.extension }} \
-            --output /out/talos-kubeedge-installer.tar.gz \
+            --output /out/installer \
             --arch amd64
 
       - name: Load installer image
         run: |
-          docker load -i output/talos-kubeedge-installer.tar.gz
+          docker load -i output/installer/installer-amd64.tar
 
       - name: Tag installer image
         id: installer-tag
