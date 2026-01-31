@@ -7,9 +7,9 @@ ConditionPathExists=/usr/local/lib/containers/edgecore/edgecore
 
 [Service]
 Type=simple
-EnvironmentFile=-/etc/kubeedge/edgecore.env
-ExecStartPre=/bin/mkdir -p /var/lib/kubeedge /var/log/kubeedge /etc/kubeedge
-ExecStart=/usr/local/lib/containers/edgecore/edgecore --config=/etc/kubeedge/config/edgecore.yaml
+EnvironmentFile=-/var/lib/kubeedge/edgecore.env
+ExecStartPre=/bin/mkdir -p /var/lib/kubeedge /var/lib/kubeedge/config /var/log/kubeedge
+ExecStart=/usr/local/lib/containers/edgecore/edgecore --config=/var/lib/kubeedge/config/edgecore.yaml
 Restart=always
 RestartSec=5s
 
@@ -18,7 +18,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/var/lib/kubeedge /var/log/kubeedge /etc/kubeedge
+ReadWritePaths=/var/lib/kubeedge /var/log/kubeedge
 
 # Resource limits
 LimitNOFILE=65536

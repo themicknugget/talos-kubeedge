@@ -40,6 +40,8 @@ machine:
 
 ## Configuration
 
+> **Note:** Talos Linux has an immutable root filesystem. Configuration files must be stored in `/var` to be writable via machine config. This extension uses `/var/lib/kubeedge` for all configuration and data files.
+
 Configure EdgeCore via `ExtensionServiceConfig`:
 
 ```yaml
@@ -59,7 +61,7 @@ spec:
             websocket:
               server: <cloudcore-server>
               port: 10000
-      mountPath: /etc/kubeedge/config/edgecore.yaml
+      mountPath: /var/lib/kubeedge/config/edgecore.yaml
       permissions: 0600
 
   environment:

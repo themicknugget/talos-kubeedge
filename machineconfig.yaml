@@ -50,7 +50,7 @@ spec:
             websocket:
               server: <cloudcore-server>
               port: 10000
-      mountPath: /etc/kubeedge/config/edgecore.yaml
+      mountPath: /var/lib/kubeedge/config/edgecore.yaml
       permissions: 0600
 
   environment:
