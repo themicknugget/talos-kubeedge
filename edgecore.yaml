@@ -35,6 +35,8 @@ container:
       options:
         - rshared
         - bind
+security:
+  writeableRootfs: true
 depends:
   - network:
       - addresses
