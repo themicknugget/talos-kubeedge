@@ -163,11 +163,13 @@ jobs:
             platform: oracle-installer
             arch: arm64
             overlay_id: ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+            tailscale_schematic: 4a0d65c669d46663f377e7161e50cfd570c401f26fd9e7bda34a02166b6f1922b
             runner: ubuntu-24.04-arm
           - name: metal
             platform: metal-installer
             arch: amd64
             overlay_id: 376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+            tailscale_schematic: 4a0d65c669d46663f377e7161e50cfd570c401f26fd9e7bda34a0216b6f1922b
             runner: ubuntu-latest
     runs-on: ${{ matrix.variant.runner }}
     steps:
@@ -204,6 +206,7 @@ jobs:
             installer \
             --base-installer-image factory.talos.dev/${{ matrix.variant.platform }}/${{ matrix.variant.overlay_id }}:${{ env.TALOS_VERSION }} \
             --system-extension-image ${{ steps.tag.outputs.extension }} \
+            --system-extension-schematic ${{ matrix.variant.tailscale_schematic }} \
             --output /out/installer \
             --arch ${{ matrix.variant.arch }}
 
