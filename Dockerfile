@@ -20,7 +20,7 @@ WORKDIR /src
 
 # Build edgecore statically
 RUN CGO_ENABLED=0 make all WHAT=edgecore BUILD_WITH_CONTAINER=false
-RUN cp _output/local/bin/edgecore /edgecore
+RUN ls -la _output/local/bin/edgecore && cp _output/local/bin/edgecore /edgecore && ls -la /edgecore
 
 FROM scratch
 
