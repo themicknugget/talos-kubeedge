@@ -158,7 +158,7 @@ jobs:
       - name: Tag installer image
         id: installer-tag
         run: |
-          IMAGE_SHA=$(docker images --format "{{.ID}} {{.Repository}}:{{.Tag}}" | grep "factory.talos.dev/${{ matrix.variant.platform }}/${{ env.OVERLAY_ID }}:${{ env.TALOS_VERSION }}" | head -1 | awk '{print $1}')
+          IMAGE_SHA=$(docker images --format "{{.ID}} {{.Repository}}:{{.Tag}}" | grep "factory.talos.dev/${{ matrix.variant.platform }}/${{ matrix.variant.overlay_id }}:${{ env.TALOS_VERSION }}" | head -1 | awk '{print $1}')
           INSTALLER_TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-installer:${{ matrix.variant.name }}-${{ steps.tag.outputs.tag }}"
           echo "sha=${IMAGE_SHA}" >> $GITHUB_OUTPUT
           echo "tag=${INSTALLER_TAG}" >> $GITHUB_OUTPUT
