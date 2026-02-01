@@ -3,6 +3,7 @@ container:
   entrypoint: ./edgecore
   args:
     - --config=/var/lib/kubeedge/config/edgecore.yaml
+  cwd: /usr/local/lib/containers/edgecore
   environment:
     - EDGE_NODE_NAME=mini6
     - EDGE_CLOUDCORE_SERVER=192.168.1.1:10000
