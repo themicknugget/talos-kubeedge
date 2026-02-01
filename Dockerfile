@@ -17,7 +17,12 @@ RUN ARCH=$(echo "${TARGETPLATFORM}" | sed 's|linux/||' | sed 's|amd64|amd64|' | 
 FROM scratch
 
 COPY --from=builder /tmp/kubeedge-*/edge/edgecore /rootfs/usr/local/lib/containers/edgecore/edgecore
-COPY extension-edgecore.service /rootfs/usr/local/lib/systemd/system/extension-edgecore.service
+
+# Talos v1.12 uses native extension services (YAML config) instead of systemd
+# The extension-edgecore.service file is not used in Talos and is kept for reference only
+# COPY extension-edgecore.service /rootfs/usr/local/lib/systemd/system/extension-edgecore.service
+
+COPY edgecore.yaml /rootfs/usr/local/etc/containers/edgecore.yaml
 COPY manifest.yaml /
 
 LABEL org.opencontainers.image.title="KubeEdge EdgeCore Extension"

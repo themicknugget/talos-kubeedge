@@ -75,8 +75,22 @@ spec:
 |------|---------|
 | `Dockerfile` | Builds the extension OCI image |
 | `manifest.yaml` | Extension metadata (required for Talos) |
-| `extension-edgecore.service` | Systemd service that runs EdgeCore |
+| `edgecore.yaml` | Talos native extension service configuration |
+| `extension-edgecore.service` | Systemd service file (kept for reference, not used in Talos) |
 | `machineconfig.yaml` | Example Talos configuration |
+
+## Extension Service Format
+
+This extension uses Talos v1.12's native extension service format (YAML configuration files in `/usr/local/etc/containers/*.yaml`) instead of systemd. Talos Linux does not use systemd for managing extension services.
+
+The `edgecore.yaml` file defines:
+- Container entrypoint and arguments
+- Environment variables
+- Volume mounts for persistent data
+- Service dependencies (network, CRI, configuration)
+- Restart policy
+
+This approach aligns with Talos's container-first architecture and provides better integration with the Talos extension framework.
 
 ## Compatibility
 

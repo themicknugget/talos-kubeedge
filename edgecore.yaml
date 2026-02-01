@@ -1,0 +1,22 @@
+name: edgecore
+container:
+  entrypoint: ./edgecore
+  args:
+    - --config=/var/lib/kubeedge/config/edgecore.yaml
+  environment:
+    - EDGE_NODE_NAME=mini6
+  mounts:
+    - source: /var/lib/kubeedge
+      destination: /var/lib/kubeedge
+      type: bind
+      options:
+        - rshared
+        - bind
+depends:
+  - network:
+      - addresses
+      - connectivity
+      - hostname
+  - service: cri
+  - configuration: true
+restart: always
