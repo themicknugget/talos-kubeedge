@@ -109,8 +109,10 @@ jobs:
         variant:
           - name: oracle
             platform: oracle-installer
+            arch: arm64
           - name: metal
             platform: metal-installer
+            arch: amd64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -146,11 +148,11 @@ jobs:
             --base-installer-image factory.talos.dev/${{ matrix.variant.platform }}/${{ env.OVERLAY_ID }}:${{ env.TALOS_VERSION }} \
             --system-extension-image ${{ steps.tag.outputs.extension }} \
             --output /out/installer \
-            --arch amd64
+            --arch ${{ matrix.variant.arch }}
 
       - name: Load installer image
         run: |
-          docker load -i output/installer/installer-amd64.tar
+          docker load -i output/installer/installer-${{ matrix.variant.arch }}.tar
 
       - name: Tag installer image
         id: installer-tag
