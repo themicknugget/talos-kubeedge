@@ -11,6 +11,8 @@ RUN apk add --no-cache \
     make \
     gcc \
     musl-dev \
+    sqlite-dev \
+    sqlite-libs \
     linux-headers \
     bash
 
@@ -18,8 +20,10 @@ ARG EDGE_CORE_VERSION
 RUN git clone --depth 1 --branch ${EDGE_CORE_VERSION} https://github.com/kubeedge/kubeedge /src
 WORKDIR /src
 
-# Build edgecore statically
-RUN CGO_ENABLED=0 make all WHAT=edgecore BUILD_WITH_CONTAINER=false
+# Build edgecore with CGO for sqlite support, statically linked with musl
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 \
+    make all WHAT=edgecore BUILD_WITH_CONTAINER=false \
+    LDFLAGS="-linkmode external -extldflags '-static'"
 
 FROM scratch
 
