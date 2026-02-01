@@ -1,12 +1,34 @@
 name: edgecore
 container:
-  entrypoint: /usr/local/lib/containers/edgecore/edgecore
+  entrypoint: /edgecore
   args:
     - --config=/var/lib/kubeedge/config/edgecore.yaml
   environment:
     - EDGE_NODE_NAME=mini5
     - EDGE_CLOUDCORE_SERVER=192.168.1.1:10000
+    - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   mounts:
+    # Libraries for dynamically linked binary
+    - source: /lib
+      destination: /lib
+      type: bind
+      options:
+        - ro
+        - bind
+    - source: /usr/lib
+      destination: /usr/lib
+      type: bind
+      options:
+        - ro
+        - bind
+    # Device access
+    - source: /dev
+      destination: /dev
+      type: bind
+      options:
+        - rshared
+        - bind
+    # KubeEdge state and config
     - source: /var/lib/kubeedge
       destination: /var/lib/kubeedge
       type: bind
