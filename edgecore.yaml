@@ -5,6 +5,7 @@ container:
     - --config=/var/lib/kubeedge/config/edgecore.yaml
   environment:
     - EDGE_NODE_NAME=mini6
+    - EDGE_CLOUDCORE_SERVER=192.168.1.1:10000
   mounts:
     - source: /var/lib/kubeedge
       destination: /var/lib/kubeedge
@@ -18,5 +19,5 @@ depends:
       - connectivity
       - hostname
   - service: cri
-  - configuration: true
 restart: always
+logToConsole: false
