@@ -1,6 +1,6 @@
 name: edgecore
 container:
-  entrypoint: /edgecore
+  entrypoint: /usr/local/lib/containers/edgecore/edgecore
   args:
     - --config=/var/lib/kubeedge/config/edgecore.yaml
   environment:
