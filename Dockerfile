@@ -11,7 +11,8 @@ RUN apk add --no-cache \
     make \
     gcc \
     musl-dev \
-    linux-headers
+    linux-headers \
+    bash
 
 ARG EDGE_CORE_VERSION
 RUN git clone --depth 1 --branch ${EDGE_CORE_VERSION} https://github.com/kubeedge/kubeedge /src
