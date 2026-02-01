@@ -42,13 +42,17 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -71,6 +75,8 @@ jobs:
             type=semver,pattern={{major}}
             type=sha,prefix=
             type=raw,value=latest,enable={{is_default_branch}}
+          flavor: |
+            suffix=${{ matrix.platform == 'linux/arm64' && '-arm64' || '' }}
 
       - name: Set version
         id: version
@@ -81,7 +87,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platform }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -89,10 +95,11 @@ jobs:
             EDGE_CORE_VERSION=${{ steps.version.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
 
       - name: Summary
         run: |
-          echo "## Extension Image Built" >> $GITHUB_STEP_SUMMARY
+          echo "## Extension Image Built (${{ matrix.platform }})" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Image" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
@@ -110,11 +117,15 @@ jobs:
             arch: arm64
             overlay_id: ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
             runner: ubuntu-24.04-arm
+            ext_platform: linux/arm64
+            ext_suffix: -arm64
           - name: metal
             platform: metal-installer
             arch: amd64
             overlay_id: 376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
             runner: ubuntu-latest
+            ext_platform: linux/amd64
+            ext_suffix: ""
     runs-on: ${{ matrix.variant.runner }}
     steps:
       - name: Checkout
@@ -139,7 +150,7 @@ jobs:
             TAG="latest"
           fi
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
-          echo "extension=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG}" >> $GITHUB_OUTPUT
+          echo "extension=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG}${{ matrix.variant.ext_suffix }}" >> $GITHUB_OUTPUT
 
       - name: Build Talos installer with extension
         run: |
