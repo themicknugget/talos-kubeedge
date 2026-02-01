@@ -31,7 +31,7 @@ RUN CGO_ENABLED=1 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
 
 FROM scratch
 
-COPY --from=builder /src/_output/local/bin/edgecore /rootfs/edgecore
+COPY --from=builder /src/_output/local/bin/edgecore /rootfs/usr/local/lib/containers/edgecore/edgecore
 
 # Talos v1.12 uses native extension services (YAML config) instead of systemd
 # The extension-edgecore.service file is not used in Talos and is kept for reference only
