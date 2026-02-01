@@ -162,7 +162,7 @@ jobs:
           - name: oracle
             platform: oracle-installer
             arch: arm64
-            overlay_id: 4a0d65c669d46663f377e7161e50cfd570c401f26fd9e7bda34a02166b6f1922b
+            overlay_id: 4a0d65c669d46663f377e7161e50cfd570c401f26fd9e7bda34a0216b6f1922b
             runner: ubuntu-24.04-arm
           - name: metal
             platform: metal-installer
