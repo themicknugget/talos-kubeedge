@@ -13,12 +13,6 @@ container:
       options:
         - rshared
         - bind
-    - source: /lib64
-      destination: /lib64
-      type: bind
-      options:
-        - rshared
-        - bind
 depends:
   - network:
       - addresses
