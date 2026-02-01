@@ -20,11 +20,10 @@ WORKDIR /src
 
 # Build edgecore statically
 RUN CGO_ENABLED=0 make all WHAT=edgecore BUILD_WITH_CONTAINER=false
-RUN ls -la _output/local/bin/edgecore && cp _output/local/bin/edgecore /edgecore && ls -la /edgecore
 
 FROM scratch
 
-COPY --from=builder /src/edgecore /rootfs/usr/local/lib/containers/edgecore/edgecore
+COPY --from=builder /src/_output/local/bin/edgecore /rootfs/usr/local/lib/containers/edgecore/edgecore
 
 # Talos v1.12 uses native extension services (YAML config) instead of systemd
 # The extension-edgecore.service file is not used in Talos and is kept for reference only
