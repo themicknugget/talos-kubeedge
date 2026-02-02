@@ -2,7 +2,7 @@ name: edgecore
 container:
   entrypoint: /edgecore
   args:
-    - --config=/etc/edgecore/edgecore.yaml
+    - --config=/var/lib/edgecore/config/edgecore.yaml
   environment:
     - EDGE_NODE_NAME=mini6
     - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
