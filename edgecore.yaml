@@ -36,7 +36,7 @@ container:
         - rw
         - bind
 security:
-  writeableRootfs: false
+  writeableRootfs: true
 depends:
   - network:
       - addresses
