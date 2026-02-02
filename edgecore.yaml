@@ -35,6 +35,14 @@ container:
         - rshared
         - rw
         - bind
+    # KubeEdge /etc/kubeedge (writable for edged manifests)
+    - source: /var/lib/edgecore/etc
+      destination: /etc/kubeedge
+      type: bind
+      options:
+        - rshared
+        - rw
+        - bind
 security:
   writeableRootfs: true
 depends:
