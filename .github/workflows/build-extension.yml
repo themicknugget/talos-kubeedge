@@ -195,6 +195,12 @@ jobs:
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "extension=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG}" >> $GITHUB_OUTPUT
 
+      - name: Fetch Tailscale extension for Talos version
+        id: tailscale
+        run: |
+          TAILSCALE_REF=$(curl -s "https://factory.talos.dev/version/${{ env.TALOS_VERSION }}/extensions/official" | jq -r '.[] | select(.name == "siderolabs/tailscale") | .ref')
+          echo "tailscale=${TAILSCALE_REF}" >> $GITHUB_OUTPUT
+
       - name: Build Talos installer with extension
         run: |
           mkdir -p output
@@ -204,6 +210,7 @@ jobs:
             installer \
             --base-installer-image factory.talos.dev/${{ matrix.variant.platform }}/${{ matrix.variant.overlay_id }}:${{ env.TALOS_VERSION }} \
             --system-extension-image ${{ steps.tag.outputs.extension }} \
+            --system-extension-image ${{ steps.tailscale.outputs.tailscale }} \
             --output /out/installer \
             --arch ${{ matrix.variant.arch }}
 
