@@ -43,5 +43,6 @@ depends:
       - connectivity
       - hostname
   - service: cri
+  - configuration: true
 restart: always
 logToConsole: false
