@@ -2,10 +2,9 @@ name: edgecore
 container:
   entrypoint: /edgecore
   args:
-    - --config=/var/lib/kubeedge/config/edgecore.yaml
+    - --config=/etc/edgecore/edgecore.yaml
   environment:
-    - EDGE_NODE_NAME=mini5
-    - EDGE_CLOUDCORE_SERVER=192.168.1.1:10000
+    - EDGE_NODE_NAME=mini6
     - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   mounts:
     # Libraries for dynamically linked binary
@@ -28,15 +27,16 @@ container:
       options:
         - rshared
         - bind
-    # KubeEdge state and config
-    - source: /var/lib/kubeedge
-      destination: /var/lib/kubeedge
+    # KubeEdge state data (separate from config)
+    - source: /var/lib/edgecore
+      destination: /var/lib/edgecore
       type: bind
       options:
         - rshared
+        - rw
         - bind
 security:
-  writeableRootfs: true
+  writeableRootfs: false
 depends:
   - network:
       - addresses
