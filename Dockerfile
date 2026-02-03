@@ -29,9 +29,25 @@ RUN CGO_ENABLED=1 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     make all WHAT=edgecore BUILD_WITH_CONTAINER=false \
     LDFLAGS="-linkmode external -extldflags '-static'"
 
+FROM alpine:3.20 AS busybox-stage
+# Extract busybox and other essential utilities
+RUN apk add --no-cache busybox-static util-linux-static && \
+    mkdir -p /rootfs/bin /rootfs/sbin && \
+    cp /bin/busybox /rootfs/bin/busybox && \
+    # Create symlinks for mount utilities
+    ln -s /bin/busybox /rootfs/bin/mount && \
+    ln -s /bin/busybox /rootfs/bin/umount && \
+    ln -s /bin/busybox /rootfs/bin/mkdir && \
+    ln -s /bin/busybox /rootfs/bin/rmdir && \
+    ln -s /bin/busybox /rootfs/bin/ln && \
+    ln -s /bin/busybox /rootfs/bin/rm
+
 FROM scratch
 
 COPY --from=builder /src/_output/local/bin/edgecore /rootfs/usr/local/lib/containers/edgecore/edgecore
+
+# Copy busybox and utilities for volume management
+COPY --from=busybox-stage /rootfs/bin/* /rootfs/bin/
 
 # Talos v1.12 uses native extension services (YAML config) instead of systemd
 # The extension-edgecore.service file is not used in Talos and is kept for reference only
