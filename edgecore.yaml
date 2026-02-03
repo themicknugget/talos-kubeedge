@@ -43,6 +43,14 @@ container:
         - rshared
         - rw
         - bind
+    # CRI socket compatibility (Talos uses /system/run, KubeEdge expects /run)
+    - source: /system/run/containerd
+      destination: /run/containerd
+      type: bind
+      options:
+        - rshared
+        - rw
+        - bind
 security:
   writeableRootfs: true
 depends:
