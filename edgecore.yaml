@@ -5,7 +5,7 @@ container:
     - --config=/var/lib/edgecore/config/edgecore.yaml
   environment:
     - EDGE_NODE_NAME=mini6
-    - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    - PATH=/usr/local/lib/containers/edgecore/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   mounts:
     # Libraries for dynamically linked binary
     - source: /lib
