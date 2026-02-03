@@ -42,6 +42,29 @@ container:
         - rshared
         - rw
         - bind
+    # Kubelet data directory (edged needs write access)
+    - source: /var/lib/kubelet
+      destination: /var/lib/kubelet
+      type: bind
+      options:
+        - rshared
+        - rw
+        - bind
+    # Kubelet logging directories
+    - source: /var/log/pods
+      destination: /var/log/pods
+      type: bind
+      options:
+        - rshared
+        - rw
+        - bind
+    - source: /var/log/containers
+      destination: /var/log/containers
+      type: bind
+      options:
+        - rshared
+        - rw
+        - bind
     # KubeEdge /etc/kubeedge (writable for edged manifests)
     - source: /var/lib/edgecore/etc
       destination: /etc/kubeedge
