@@ -5,11 +5,11 @@ container:
     - --config=/var/lib/edgecore/config/edgecore.yaml
   environment:
     - EDGE_NODE_NAME=mini6
-    - PATH=/usr/local/lib/containers/edgecore/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   mounts:
     # Busybox utilities for volume management (mount, umount, etc.)
     - source: /usr/local/lib/containers/edgecore/bin
-      destination: /usr/local/lib/containers/edgecore/bin
+      destination: /bin
       type: bind
       options:
         - ro
