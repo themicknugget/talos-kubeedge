@@ -7,6 +7,13 @@ container:
     - EDGE_NODE_NAME=mini6
     - PATH=/usr/local/lib/containers/edgecore/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   mounts:
+    # Busybox utilities for volume management (mount, umount, etc.)
+    - source: /usr/local/lib/containers/edgecore/bin
+      destination: /usr/local/lib/containers/edgecore/bin
+      type: bind
+      options:
+        - ro
+        - bind
     # Libraries for dynamically linked binary
     - source: /lib
       destination: /lib
