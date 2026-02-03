@@ -20,6 +20,31 @@ container:
       options:
         - ro
         - bind
+    # System binaries (mount, umount, etc. required for volume management)
+    - source: /bin
+      destination: /bin
+      type: bind
+      options:
+        - ro
+        - bind
+    - source: /sbin
+      destination: /sbin
+      type: bind
+      options:
+        - ro
+        - bind
+    - source: /usr/bin
+      destination: /usr/bin
+      type: bind
+      options:
+        - ro
+        - bind
+    - source: /usr/sbin
+      destination: /usr/sbin
+      type: bind
+      options:
+        - ro
+        - bind
     # Device access
     - source: /dev
       destination: /dev
