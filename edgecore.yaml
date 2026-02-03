@@ -27,6 +27,13 @@ container:
       options:
         - rshared
         - bind
+    # Cgroup filesystem (required for edged kubelet functionality)
+    - source: /sys/fs/cgroup
+      destination: /sys/fs/cgroup
+      type: bind
+      options:
+        - ro
+        - bind
     # KubeEdge state data (separate from config)
     - source: /var/lib/edgecore
       destination: /var/lib/edgecore
