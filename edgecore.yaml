@@ -32,7 +32,7 @@ container:
       destination: /sys/fs/cgroup
       type: bind
       options:
-        - ro
+        - rw
         - bind
     # KubeEdge state data (separate from config)
     - source: /var/lib/edgecore
