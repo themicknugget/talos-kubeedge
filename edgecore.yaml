@@ -1,7 +1,8 @@
 name: edgecore
 container:
-  entrypoint: /edgecore
+  entrypoint: /bin/sh
   args:
+    - /start-edgecore.sh
     - --config=/var/lib/edgecore/config/edgecore.yaml
   environment:
     - EDGE_NODE_NAME=mini6
@@ -89,8 +90,15 @@ container:
         - rshared
         - rw
         - bind
-    # CNI configuration and plugins (use /var/etc/cni for edge-specific CNI config)
+    # CNI configuration source (our edge-specific config)
     - source: /var/etc/cni
+      destination: /var/etc/cni
+      type: bind
+      options:
+        - ro
+        - bind
+    # Host CNI configuration (writeable for startup script to copy config)
+    - source: /etc/cni
       destination: /etc/cni
       type: bind
       options:

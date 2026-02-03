@@ -49,6 +49,9 @@ COPY --from=builder /src/_output/local/bin/edgecore /rootfs/usr/local/lib/contai
 # Copy busybox and utilities to edgecore's container directory (not system /bin)
 COPY --from=busybox-stage /rootfs/bin/* /rootfs/usr/local/lib/containers/edgecore/bin/
 
+# Copy startup script
+COPY start-edgecore.sh /rootfs/usr/local/lib/containers/edgecore/start-edgecore.sh
+
 # Talos v1.12 uses native extension services (YAML config) instead of systemd
 # The extension-edgecore.service file is not used in Talos and is kept for reference only
 # COPY extension-edgecore.service /rootfs/usr/local/lib/systemd/system/extension-edgecore.service
