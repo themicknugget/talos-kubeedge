@@ -89,8 +89,8 @@ container:
         - rshared
         - rw
         - bind
-    # CNI configuration and plugins
-    - source: /etc/cni
+    # CNI configuration and plugins (use /var/etc/cni for edge-specific CNI config)
+    - source: /var/etc/cni
       destination: /etc/cni
       type: bind
       options:
