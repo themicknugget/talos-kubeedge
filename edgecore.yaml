@@ -81,6 +81,37 @@ container:
         - rshared
         - rw
         - bind
+    # Runtime directory (for Cilium socket, pod sandboxes, etc.)
+    - source: /var/run
+      destination: /var/run
+      type: bind
+      options:
+        - rshared
+        - rw
+        - bind
+    # CNI configuration and plugins
+    - source: /etc/cni
+      destination: /etc/cni
+      type: bind
+      options:
+        - rshared
+        - rw
+        - bind
+    - source: /opt
+      destination: /opt
+      type: bind
+      options:
+        - rshared
+        - rw
+        - bind
+    # Containerd data (for snapshotter)
+    - source: /var/lib/containerd
+      destination: /var/lib/containerd
+      type: bind
+      options:
+        - rshared
+        - rw
+        - bind
 security:
   writeableRootfs: true
 depends:
